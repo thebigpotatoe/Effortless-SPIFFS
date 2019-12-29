@@ -1,0 +1,10 @@
+Effortless_SPIFFS	KEYWORD1
+eSPIFFS	KEYWORD1
+
+checkFlashConfig	KEYWORD2
+getFileSize	KEYWORD2
+openFile	KEYWORD2
+saveFile	KEYWORD2
+openFromFile	KEYWORD2
+saveToFile	KEYWORD2
+
