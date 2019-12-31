@@ -1,6 +1,6 @@
 # Effortless-SPIFFS
 
-A class designed to make reading and storing data on the ESP8266 effortless. This library aims to make access to SPIFFS much easier to allow users to get on with writing the important stuff rather than debugging why  storage isn't working.
+A class designed to make reading and storing data on the ESP8266 effortless. This library aims to make access to SPIFFS much easier to allow users to get on with writing the important stuff rather than debugging why storage isn't working.
 
 ## Quick Start
 
@@ -200,7 +200,7 @@ Serial.print("Data stored in myVariable is: ")
 Serial.println(myVariable, 6);
 ```
 
-#### Contributing and Feedback
+## Contributing and Feedback
 
 This is my first Arduino library and while I have tried to optimise it there is most likely room for improvement. Any feedback in the form of issues or pull request are welcome.
 
