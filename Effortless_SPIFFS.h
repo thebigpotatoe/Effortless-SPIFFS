@@ -43,7 +43,7 @@ class eSPIFFS {
   ~eSPIFFS() {}
 
  public:  // spiffs access methods
-  inline bool checkFlashConfig() {
+  virtual inline bool checkFlashConfig() {
     if (!flashSizeCorrect) {
       // Get actual flash size and size set in IDE
       uint32_t realSize = ESP.getFlashChipRealSize();
@@ -73,7 +73,7 @@ class eSPIFFS {
     // Return the boolean
     return flashSizeCorrect;
   }
-  inline int getFileSize(const char* _filename) {
+  virtual inline int getFileSize(const char* _filename) {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {
       // Check if the spiffs starts correctly
