@@ -16,7 +16,7 @@ void setup(){}
 
 void loop() {
     // Open the storage file and save data to myVariable
-    if (fileSystem.saveToFile("Float.txt", myVariable)) {
+    if (fileSystem.saveToFile("/Float.txt", myVariable)) {
         Serial.print("Successfully read file and parsed data: ");
         Serial.println(myVariable, 6);
     }
