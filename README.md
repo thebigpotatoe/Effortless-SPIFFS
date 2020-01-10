@@ -49,7 +49,7 @@ eSPIFFS(&Serial);
 
 // Usage
 eSPIFFS fileSystem;
-eSPIFFS fileSystem(Serial);
+eSPIFFS fileSystem(&Serial);
 ```
 
 ### Extending a Class
