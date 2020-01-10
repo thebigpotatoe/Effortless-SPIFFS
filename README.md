@@ -75,7 +75,7 @@ eSPIFFS::openFromFile(const char* _filename, NewType& _output)
 
 ### Check that SPIFFS size is correct
 
-eSPIFFS checks if the SPIFFS system is correct in the Arduino IDE using `checkFlashConfig` each time `saveFile` and `openFile` are called. This is to ensure that SPIFFS can be read and written to before doing any useful work. This method uses Serial debug outputs to tell the user how to set up spiffs if passed a serial reference. This function is public and inline to and optimised for frequent calls.
+eSPIFFS checks if the SPIFFS system is correct in the Arduino IDE using `checkFlashConfig` each time `saveFile` and `openFile` are called. This is to ensure that SPIFFS can be read and written to before doing any useful work. This method uses Serial debug outputs to tell the user how to set up spiffs if passed a serial reference. This function is public and inline to optimise for frequent calls.
 
 ``` c++
 // Definition
@@ -119,7 +119,7 @@ fileSystem.saveFile("Example.file", myString);
 
 #### Saving data to file using a variable
 
-The second method `saveToFile` is used to store data is to use a reference to a variable of the users choice. This function wraps `saveFile` by parsing the users variable to a C String and passing it through. The argument it takes are filename and a reference value to any standard type. It also supports String, std::string, and ArduinoJson DynamicJsonDocuments. This method will also return true on a successful write to SPIFFS and false if there is an error.
+The second method `saveToFile` is used to store data is to use a reference to a variable of the users choice. This function wraps `saveFile` by parsing the users variable to a C String and saving that. The arguments it takes are filename and a reference value to any standard type. It also supports String, std::string, and ArduinoJson DynamicJsonDocuments. This method will also return true on a successful write to SPIFFS and false if there is an error.
 
 ``` c++
 // Definition
@@ -152,7 +152,7 @@ The eSPIFFS API extends access to the SPIFFS of your ESP8266 in two ways; by mod
 
 ### Opening files as a string
 
-The first method `openFile` accesses data stored in the SPIFFS using the eSPIFFS class is through a modified const char* value. This method takes a filename, a char pointer to an output C String buffer, and the size of the number of bytes to read from the file. The function will return true if it stored the data in the char pointer and false if it failed for any reason.
+The first method `openFile` accesses data stored in the SPIFFS is through a modified const char* value. This method takes a filename, a char pointer to an output C String buffer, and the size of the number of bytes to read from the file. The function will return true if it stored the data in the char pointer and false if it failed for any reason.
 
 > It should be noted that if the number of bytes asked to read will be automatically limited to the size of the file. Using the getFileSize() method before this is useful to set a char array of the correct size.
 
@@ -171,7 +171,7 @@ Serial.println(fileContents);
 
 ### Opening Files with a Variable Reference
 
-The second method `openFromFile` wraps `openFile` to return a parsed value to a variable of your choice. It takes a file name as well as a reference to your variable where it will store parsed data. The method returns true on if a value was parsed and stored correctly and false if it failed at any point. If the function failed it will not modify the original data in the variable reference. This method supports all basic types plus String, std::string, and ArduinoJson DynamicJsonDocuments
+The second method `openFromFile` wraps `openFile` to return a parsed value to a variable of your choice. It takes a file name as well as a reference to your variable where it will store parsed data. The method returns true if a value was parsed and stored correctly and false if it failed at any point. If the function failed it will not modify the original data in the variable reference. This method supports all basic types plus String, std::string, and ArduinoJson DynamicJsonDocuments
 
 ``` c++
 // Definitions
