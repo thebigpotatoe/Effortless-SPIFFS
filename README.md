@@ -75,7 +75,7 @@ eSPIFFS::openFromFile(const char* _filename, NewType& _output)
 
 ### Check that SPIFFS size is correct
 
-eSPIFFS checks if the SPIFFS system was correctly in the Arduino IDE using `checkFlashConfig` each time a `saveFile` and `openFile` are called. This is to ensure that SPIFFS can be read and written to before doing any useful work. This method uses Serial debug outputs to tell the user how to set up spiffs if passed a serial reference. This function is public and inline to and optimised for frequent calls.
+eSPIFFS checks if the SPIFFS system is correct in the Arduino IDE using `checkFlashConfig` each time `saveFile` and `openFile` are called. This is to ensure that SPIFFS can be read and written to before doing any useful work. This method uses Serial debug outputs to tell the user how to set up spiffs if passed a serial reference. This function is public and inline to and optimised for frequent calls.
 
 ``` c++
 // Definition
