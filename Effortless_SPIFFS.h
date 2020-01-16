@@ -2,22 +2,22 @@
 
 #ifdef __cplusplus
 
-#if defined(ESP8266)
+#  if defined(ESP8266)
 
-#include <ArduinoJson.h>
-#include <string>
-#include "FS.h"
+#    include <ArduinoJson.h>
+#    include <string>
+#    include "FS.h"
 
-#ifndef Effortless_SPIFFS_CHAR_SIZE
-#define Effortless_SPIFFS_CHAR_SIZE 1024
-#endif
+#    ifndef Effortless_SPIFFS_CHAR_SIZE
+#      define Effortless_SPIFFS_CHAR_SIZE 1024
+#    endif
 
-#ifndef Effortless_SPIFFS_PRECISION
-#define Effortless_SPIFFS_PRECISION 15
-#endif
+#    ifndef Effortless_SPIFFS_PRECISION
+#      define Effortless_SPIFFS_PRECISION 15
+#    endif
 
-#ifndef Effortless_SPIFFS_h
-#define Effortless_SPIFFS_h
+#    ifndef Effortless_SPIFFS_h
+#      define Effortless_SPIFFS_h
 
 namespace Effortless_SPIFFS_Internal {
   template <bool B, class T = void>
@@ -137,7 +137,7 @@ class eSPIFFS {
       // Check if the spiffs starts correctly
       if (SPIFFS.begin()) {  // 10us
         // Open the file in write mode and check if open
-        File currentFile = SPIFFS.open(_filename, "w");
+        File   currentFile = SPIFFS.open(_filename, "w");
         if (currentFile) {
           // Print the input string to the file
           if (currentFile.print(_input)) {
@@ -163,7 +163,7 @@ class eSPIFFS {
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, bool>::value, bool>::type
   openFromFile(const char* _filename, T& _output) {
     size_t fileSize = getFileSize(_filename);
-    char fileContents[fileSize + 1];
+    char   fileContents[fileSize + 1];
     memset(fileContents, 0x00, fileSize + 1);
 
     if (openFile(_filename, fileContents, fileSize)) {
@@ -179,7 +179,7 @@ class eSPIFFS {
                                                  bool>::type
   openFromFile(const char* _filename, T& _output) {
     size_t fileSize = getFileSize(_filename);
-    char fileContents[fileSize + 1];
+    char   fileContents[fileSize + 1];
     memset(fileContents, 0x00, fileSize + 1);
 
     if (openFile(_filename, fileContents, fileSize)) {
@@ -197,7 +197,7 @@ class eSPIFFS {
                                                  bool>::type
   openFromFile(const char* _filename, T& _output) {
     size_t fileSize = getFileSize(_filename);
-    char fileContents[fileSize + 1];
+    char   fileContents[fileSize + 1];
     memset(fileContents, 0x00, fileSize + 1);
 
     if (openFile(_filename, fileContents, fileSize)) {
@@ -215,7 +215,7 @@ class eSPIFFS {
                                                  bool>::type
   openFromFile(const char* _filename, T& _output) {
     size_t fileSize = getFileSize(_filename);
-    char fileContents[fileSize + 1];
+    char   fileContents[fileSize + 1];
     memset(fileContents, 0x00, fileSize + 1);
 
     if (openFile(_filename, fileContents, fileSize)) {
@@ -251,7 +251,7 @@ class eSPIFFS {
                                                  bool>::type
   openFromFile(const char* _filename, T& _output) {
     size_t fileSize = getFileSize(_filename);
-    char fileContents[fileSize + 1];
+    char   fileContents[fileSize + 1];
     memset(fileContents, 0x00, fileSize + 1);
 
     if (openFile(_filename, fileContents, fileSize)) {
@@ -264,11 +264,11 @@ class eSPIFFS {
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   openFromFile(const char* _filename, T& _output) {
     size_t fileSize = getFileSize(_filename);
-    char fileContents[fileSize + 1];
+    char   fileContents[fileSize + 1];
     memset(fileContents, 0x00, fileSize + 1);
 
     if (openFile(_filename, fileContents, fileSize)) {
-      DynamicJsonDocument currentjsonDocument(_output.capacity());
+      DynamicJsonDocument  currentjsonDocument(_output.capacity());
       DeserializationError jsonError = deserializeJson(currentjsonDocument, fileContents);
       if (!jsonError) {
         _output = currentjsonDocument;
@@ -390,16 +390,16 @@ class eSPIFFS {
   }
 
  private:  // storage
-  bool flashSizeCorrect = false;
+  bool            flashSizeCorrect = false;
   HardwareSerial* serial = nullptr;
 };
 
-#endif
+#    endif
+
+#  else
+#    error Effortless_SPIFFS currently works on the ESP8266 only
+#  endif
 
 #else
-#error Effortless_SPIFFS currently works on the ESP8266 only
-#endif
-
-#else
-#error Effortless_SPIFFS requires a C++ compiler
+#  error Effortless_SPIFFS requires a C++ compiler
 #endif
