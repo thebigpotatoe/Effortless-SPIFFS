@@ -4,7 +4,6 @@
 
 #  if defined(ESP8266)
 
-#    include <ArduinoJson.h>
 #    include <string>
 #    include "FS.h"
 
@@ -260,6 +259,7 @@ class eSPIFFS {
     }
     return false;
   }
+#      if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   openFromFile(const char* _filename, T& _output) {
@@ -282,6 +282,7 @@ class eSPIFFS {
     }
     return false;
   }
+#      endif
 
  public:  // save value templates
   template <class T>
@@ -358,6 +359,7 @@ class eSPIFFS {
     }
     return false;
   }
+#      if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   saveToFile(const char* _filename, T& _input) {
@@ -372,6 +374,7 @@ class eSPIFFS {
     }
     return false;
   }
+#      endif
 
  private:  // serial methods
   void print(const char* _msg) {

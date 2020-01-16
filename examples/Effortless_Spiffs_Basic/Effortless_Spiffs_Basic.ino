@@ -1,4 +1,5 @@
-#include <Effortless_SPIFFS.h>
+// #include <ArduinoJson.h>  // Uncomment this to include ArduinoJson. Make sure to have it installed first
+#include <C:\Users\Mitch\Google Drive\Github\Effortless-SPIFFS\Effortless_SPIFFS.h>
 
 void setup() {
   // Start Serial
@@ -112,6 +113,7 @@ void setup() {
   Serial.println(newStdString.c_str());
 
   // Arduino JSON documents - currently only dynamic documents
+#if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   DynamicJsonDocument jsonDocument(1024);
   if (writeToFlash) {
     jsonDocument["Value"] = random(0, 100000);
@@ -122,6 +124,7 @@ void setup() {
   Serial.print("JSON Document is: ");
   serializeJson(jsonDocument, Serial);
   Serial.println();
+#endif
 
   // Reboot to see what values are stored
   if (writeToFlash) {
