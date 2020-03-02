@@ -18,6 +18,11 @@
 #define Effortless_SPIFFS_PRECISION 15
 #endif
 
+#define ESPIFFS_DEBUG(x) \
+  if (debug) debug->print(x)
+#define ESPIFFS_DEBUGLN(x) \
+  if (debug) debug->println(x)
+
 namespace Effortless_SPIFFS_Internal {
   template <bool B, class T = void>
   struct enable_if {};
@@ -37,8 +42,7 @@ namespace Effortless_SPIFFS_Internal {
 
 class eSPIFFS {
  public:  // constructors
-  eSPIFFS() : serial(nullptr) { checkFlashConfig(); }
-  eSPIFFS(HardwareSerial* _serial) : serial(_serial) { checkFlashConfig(); }
+  eSPIFFS(Print* _debug = nullptr) : debug(_debug) { checkFlashConfig(); }
   ~eSPIFFS() {}
 
  public:  // spiffs access methods
@@ -58,14 +62,14 @@ class eSPIFFS {
             // Change the boolean to true if the config is ok
             flashSizeCorrect = true;
           } else {
-            println("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu");
+            ESPIFFS_DEBUGLN("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu");
           }
         } else {
-          println("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu");
+          ESPIFFS_DEBUGLN("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu");
         }
       } else {
         // Tell the user the flash is incorrect if it is not
-        println("[checkFlashConfig] - Flash chip set to the incorrect size, correct size is; " + String(realSize));
+        ESPIFFS_DEBUGLN("[checkFlashConfig] - Flash chip set to the incorrect size, correct size is; " + String(realSize));
       }
     }
 
@@ -85,15 +89,15 @@ class eSPIFFS {
             // Return the file size
             return currentFile.size();
           } else {
-            print("[getFileSize] - File did not open correctly: ");
-            println(_filename);
+            ESPIFFS_DEBUG("[getFileSize] - File did not open correctly: ");
+            ESPIFFS_DEBUGLN(_filename);
           }
         } else {
-          print("[getFileSize] - File does not exist: ");
-          println(_filename);
+          ESPIFFS_DEBUG("[getFileSize] - File does not exist: ");
+          ESPIFFS_DEBUGLN(_filename);
         }
       } else {
-        println("[getFileSize] - Failed to start file system");
+        ESPIFFS_DEBUGLN("[getFileSize] - Failed to start file system");
       }
     }
     return 0;
@@ -113,19 +117,19 @@ class eSPIFFS {
             if (currentFile.readBytes(_output, numBytesToRead)) {  // readBytes - 300us, readBytesUntil - 465us - goes up with larger strings
               return true;
             } else {
-              print("[openFile] - Failed to read any bytes from file: ");
-              println(_filename);
+              ESPIFFS_DEBUG("[openFile] - Failed to read any bytes from file: ");
+              ESPIFFS_DEBUGLN(_filename);
             }
           } else {
-            print("[openFile] - Failed to open file");
-            println(_filename);
+            ESPIFFS_DEBUG("[openFile] - Failed to open file");
+            ESPIFFS_DEBUGLN(_filename);
           }
         } else {
-          print("[openFile] - File does not exist: ");
-          println(_filename);
+          ESPIFFS_DEBUG("[openFile] - File does not exist: ");
+          ESPIFFS_DEBUGLN(_filename);
         }
       } else {
-        println("[openFile] - Failed to start SPIFFS");
+        ESPIFFS_DEBUGLN("[openFile] - Failed to start SPIFFS");
       }
     }
     return false;
@@ -136,22 +140,22 @@ class eSPIFFS {
       // Check if the spiffs starts correctly
       if (SPIFFS.begin()) {  // 10us
         // Open the file in write mode and check if open
-        File   currentFile = SPIFFS.open(_filename, "w");
+        File currentFile = SPIFFS.open(_filename, "w");
         if (currentFile) {
           // Print the input string to the file
           if (currentFile.print(_input)) {
             currentFile.close();
             return true;
           } else {
-            print("[saveFile] - Failed to write any bytes to file: ");
-            println(_filename);
+            ESPIFFS_DEBUG("[saveFile] - Failed to write any bytes to file: ");
+            ESPIFFS_DEBUGLN(_filename);
           }
         } else {
-          print("[saveFile] - Failed to open file for writing");
-          println(_filename);
+          ESPIFFS_DEBUG("[saveFile] - Failed to open file for writing");
+          ESPIFFS_DEBUGLN(_filename);
         }
       } else {
-        println("[saveFile] - Failed to start SPIFFS");
+        ESPIFFS_DEBUGLN("[saveFile] - Failed to start SPIFFS");
       }
     }
     return false;
@@ -239,7 +243,7 @@ class eSPIFFS {
         return true;
       }
     } else {
-      println("[openFromFile<char*>] - Internal static char buffer to small for file contents, set Effortless_SPIFFS_CHAR_SIZE larger if required (default 1024)");
+      ESPIFFS_DEBUGLN("[openFromFile<char*>] - Internal static char buffer to small for file contents, set Effortless_SPIFFS_CHAR_SIZE larger if required (default 1024)");
     }
 
     return false;
@@ -259,7 +263,7 @@ class eSPIFFS {
     }
     return false;
   }
-#      if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
+#if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   openFromFile(const char* _filename, T& _output) {
@@ -274,15 +278,15 @@ class eSPIFFS {
         _output = currentjsonDocument;
         return true;
       } else {
-        print("[openFromFile<DynamicJsonDocument>] - Failed to parse JSON: ");
-        print(jsonError.c_str());
-        print(" for file ");
-        println(_filename);
+        ESPIFFS_DEBUG("[openFromFile<DynamicJsonDocument>] - Failed to parse JSON: ");
+        ESPIFFS_DEBUG(jsonError.c_str());
+        ESPIFFS_DEBUG(" for file ");
+        ESPIFFS_DEBUGLN(_filename);
       }
     }
     return false;
   }
-#      endif
+#endif
 
  public:  // save value templates
   template <class T>
@@ -359,7 +363,7 @@ class eSPIFFS {
     }
     return false;
   }
-#      if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
+#if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   saveToFile(const char* _filename, T& _input) {
@@ -369,40 +373,24 @@ class eSPIFFS {
         return true;
       }
     } else {
-      print("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
-      println(_filename);
+      ESPIFFS_DEBUG("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
+      ESPIFFS_DEBUGLN(_filename);
     }
     return false;
   }
-#      endif
-
- private:  // serial methods
-  void print(const char* _msg) {
-    // Check if the pointer has been set and serial has begun
-    if (serial && *serial) serial->print(_msg);
-  }
-  void print(String _msg) {
-    print(_msg.c_str());
-  }
-  void println(const char* _msg) {
-    // Check if the pointer has been set and serial has begun
-    if (serial && *serial) serial->println(_msg);
-  }
-  void println(String _msg) {
-    println(_msg.c_str());
-  }
+#endif
 
  private:  // storage
-  bool            flashSizeCorrect = false;
-  HardwareSerial* serial = nullptr;
+  bool   flashSizeCorrect = false;
+  Print* debug = nullptr;
 };
 
-#    endif
-
-#  else
-#    error Effortless_SPIFFS currently works on the ESP8266 only
-#  endif
+#endif
 
 #else
-#  error Effortless_SPIFFS requires a C++ compiler
+#error Effortless_SPIFFS currently works on the ESP8266 only
+#endif
+
+#else
+#error Effortless_SPIFFS requires a C++ compiler
 #endif
