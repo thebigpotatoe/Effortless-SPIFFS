@@ -5,7 +5,6 @@ ColumnLimit: 0
 AccessModifierOffset: -1
 AllowShortIfStatementsOnASingleLine: true
 IndentCaseLabels: false
-IndentPPDirectives : AfterHash
 NamespaceIndentation: All
 
 PointerAlignment : Left
