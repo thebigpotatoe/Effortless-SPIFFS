@@ -2,21 +2,21 @@
 
 #ifdef __cplusplus
 
-#  if defined(ESP8266)
+#if defined(ESP8266)
 
-#    include <string>
-#    include "FS.h"
+#include <string>
+#include "FS.h"
 
-#    ifndef Effortless_SPIFFS_CHAR_SIZE
-#      define Effortless_SPIFFS_CHAR_SIZE 1024
-#    endif
+#ifndef Effortless_SPIFFS_h
+#define Effortless_SPIFFS_h
 
-#    ifndef Effortless_SPIFFS_PRECISION
-#      define Effortless_SPIFFS_PRECISION 15
-#    endif
+#ifndef Effortless_SPIFFS_CHAR_SIZE
+#define Effortless_SPIFFS_CHAR_SIZE 1024
+#endif
 
-#    ifndef Effortless_SPIFFS_h
-#      define Effortless_SPIFFS_h
+#ifndef Effortless_SPIFFS_PRECISION
+#define Effortless_SPIFFS_PRECISION 15
+#endif
 
 namespace Effortless_SPIFFS_Internal {
   template <bool B, class T = void>
