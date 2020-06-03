@@ -6,6 +6,7 @@
 
 #include <string>
 #include "FS.h"
+#include <LittleFS.h>
 
 #ifndef Effortless_SPIFFS_h
 #define Effortless_SPIFFS_h
@@ -54,18 +55,18 @@ class eSPIFFS {
 
       // Compare the two sizes
       if (realSize >= ideSize) {
-        // Get info about the SPIFFS
-        if (SPIFFS.begin()) {
+        // Get info about the LittleFS
+        if (LittleFS.begin()) {
           FSInfo fs_info;
-          SPIFFS.info(fs_info);
+          LittleFS.info(fs_info);
           if (fs_info.totalBytes != 0) {
             // Change the boolean to true if the config is ok
             flashSizeCorrect = true;
           } else {
-            ESPIFFS_DEBUGLN("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu");
+            ESPIFFS_DEBUGLN("[checkFlashConfig] - LittleFS size was set to 0, please select a LittleFS size from the \"tools->flash size:\" menu");
           }
         } else {
-          ESPIFFS_DEBUGLN("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu");
+          ESPIFFS_DEBUGLN("[checkFlashConfig] - LittleFS size was set to 0, please select a LittleFS size from the \"tools->flash size:\" menu");
         }
       } else {
         // Tell the user the flash is incorrect if it is not
@@ -80,11 +81,11 @@ class eSPIFFS {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {
       // Check if the spiffs starts correctly
-      if (SPIFFS.begin()) {
+      if (LittleFS.begin()) {
         // Check if the file exists
-        if (SPIFFS.exists(_filename)) {
+        if (LittleFS.exists(_filename)) {
           // Open the dir and check if it is a file
-          File currentFile = SPIFFS.open(_filename, "r");
+          File currentFile = LittleFS.open(_filename, "r");
           if (currentFile) {
             // Return the file size
             return currentFile.size();
@@ -106,11 +107,11 @@ class eSPIFFS {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {  // 5us
       // Check if the spiffs starts correctly
-      if (SPIFFS.begin()) {  // 5us
+      if (LittleFS.begin()) {  // 5us
         // Check if the file exists
-        if (SPIFFS.exists(_filename)) {  // 49us
+        if (LittleFS.exists(_filename)) {  // 49us
           // Open it in read mode and check if its ok
-          File currentFile = SPIFFS.open(_filename, "r");  // 115us
+          File currentFile = LittleFS.open(_filename, "r");  // 115us
           if (currentFile) {
             // Read the desired number of bytes from the array to the output buffer
             size_t numBytesToRead = (_len > 0 && _len <= currentFile.size()) ? _len : currentFile.size();
@@ -129,7 +130,7 @@ class eSPIFFS {
           ESPIFFS_DEBUGLN(_filename);
         }
       } else {
-        ESPIFFS_DEBUGLN("[openFile] - Failed to start SPIFFS");
+        ESPIFFS_DEBUGLN("[openFile] - Failed to start LittleFS");
       }
     }
     return false;
@@ -138,9 +139,9 @@ class eSPIFFS {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {  // 5us
       // Check if the spiffs starts correctly
-      if (SPIFFS.begin()) {  // 10us
+      if (LittleFS.begin()) {  // 10us
         // Open the file in write mode and check if open
-        File currentFile = SPIFFS.open(_filename, "w");
+        File currentFile = LittleFS.open(_filename, "w");
         if (currentFile) {
           // Print the input string to the file
           if (currentFile.print(_input)) {
@@ -155,7 +156,7 @@ class eSPIFFS {
           ESPIFFS_DEBUGLN(_filename);
         }
       } else {
-        ESPIFFS_DEBUGLN("[saveFile] - Failed to start SPIFFS");
+        ESPIFFS_DEBUGLN("[saveFile] - Failed to start LittleFS");
       }
     }
     return false;
