@@ -337,7 +337,7 @@ class eSPIFFS {
                                                  bool>::type
   saveToFile(const char* _filename, T& _input) {
     char inputString[15];  // unsigned long string will be 10 digits + \0
-    if (sprintf(inputString, "%i", _input)) {
+    if (sprintf(inputString, "%lu", (unsigned long)_input)) {
       if (saveFile(_filename, inputString)) {
         return true;
       }
