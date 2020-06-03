@@ -19,9 +19,9 @@
 #endif
 
 #define ESPIFFS_DEBUG(x) \
-  if (debug) debug->print(x)
+  if (printer) printer->print(x)
 #define ESPIFFS_DEBUGLN(x) \
-  if (debug) debug->println(x)
+  if (printer) printer->println(x)
 
 namespace Effortless_SPIFFS_Internal {
   template <bool B, class T = void>
@@ -42,7 +42,7 @@ namespace Effortless_SPIFFS_Internal {
 
 class eSPIFFS {
  public:  // constructors
-  eSPIFFS(Print* _debug = nullptr) : debug(_debug) { checkFlashConfig(); }
+  eSPIFFS(Print* _debug = nullptr) : printer(_debug) { checkFlashConfig(); }
   ~eSPIFFS() {}
 
  public:  // spiffs access methods
@@ -382,7 +382,7 @@ class eSPIFFS {
 
  private:  // storage
   bool   flashSizeCorrect = false;
-  Print* debug = nullptr;
+  Print* printer = nullptr;
 };
 
 #endif
