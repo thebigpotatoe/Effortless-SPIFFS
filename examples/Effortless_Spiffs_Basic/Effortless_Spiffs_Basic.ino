@@ -13,7 +13,7 @@ copies or substantial portions of the Software.
 */
 
 // #include <ArduinoJson.h>  // Uncomment this to include ArduinoJson. Make sure to have it installed first
-#include <C:\Users\Mitch\Google Drive\Github\Effortless-SPIFFS\Effortless_SPIFFS.h>
+#include <Effortless_SPIFFS.h>
 
 void setup() {
   // Start Serial
