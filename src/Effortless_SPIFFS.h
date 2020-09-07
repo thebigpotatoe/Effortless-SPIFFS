@@ -2,15 +2,32 @@
 
 #ifdef __cplusplus
 
-#if defined(ESP8266)
-
-#include <string>
+// Check for arduino env here
+// Arduino Libraries
+#include <Print.h>
 #include "FS.h"
+
+// Architecture Specific Libraries
+#if defined(ESP8266)
 #include <LittleFS.h>
+#define EFFORTLESS_SPIFFS_TYPE LittleFS
+#endif
+
+#if defined(ESP32)
+// #error Effortless SPIFFS doe snot yet support the ESP32
+#include "SPIFFS.h"
+#define EFFORTLESS_SPIFFS_TYPE SPIFFS
+// #else
+// #error Effortless SPIFFS does nto work on the selected architecture
+#endif
+
+// Standard c++ libraries
+#include <string>
 
 #ifndef Effortless_SPIFFS_h
 #define Effortless_SPIFFS_h
 
+// Effortless SPIFFS Constants
 #ifndef Effortless_SPIFFS_CHAR_SIZE
 #define Effortless_SPIFFS_CHAR_SIZE 1024
 #endif
@@ -19,11 +36,13 @@
 #define Effortless_SPIFFS_PRECISION 15
 #endif
 
+// Effortless SPIFFS Debug Macros
 #define ESPIFFS_DEBUG(x) \
   if (printer) printer->print(x)
 #define ESPIFFS_DEBUGLN(x) \
   if (printer) printer->println(x)
 
+// Effortless SPIFFS internal namespace
 namespace Effortless_SPIFFS_Internal {
   template <bool B, class T = void>
   struct enable_if {};
@@ -41,6 +60,7 @@ namespace Effortless_SPIFFS_Internal {
   };
 }  // namespace Effortless_SPIFFS_Internal
 
+// Main Effortless SPIFFS Class
 class eSPIFFS {
  public:  // constructors
   eSPIFFS(Print* _debug = nullptr) : printer(_debug) { checkFlashConfig(); }
@@ -48,6 +68,7 @@ class eSPIFFS {
 
  public:  // spiffs access methods
   virtual inline bool checkFlashConfig() {
+#if defined(ESP8266)
     if (!flashSizeCorrect) {
       // Get actual flash size and size set in IDE
       uint32_t realSize = ESP.getFlashChipRealSize();
@@ -56,9 +77,9 @@ class eSPIFFS {
       // Compare the two sizes
       if (realSize >= ideSize) {
         // Get info about the LittleFS
-        if (LittleFS.begin()) {
+        if (EFFORTLESS_SPIFFS_TYPE.begin()) {
           FSInfo fs_info;
-          LittleFS.info(fs_info);
+          EFFORTLESS_SPIFFS_TYPE.info(fs_info);
           if (fs_info.totalBytes != 0) {
             // Change the boolean to true if the config is ok
             flashSizeCorrect = true;
@@ -76,16 +97,19 @@ class eSPIFFS {
 
     // Return the boolean
     return flashSizeCorrect;
+#elif defined(ESP32)
+    return (EFFORTLESS_SPIFFS_TYPE.totalBytes() > 0);
+#endif
   }
   virtual inline int getFileSize(const char* _filename) {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {
       // Check if the spiffs starts correctly
-      if (LittleFS.begin()) {
+      if (EFFORTLESS_SPIFFS_TYPE.begin()) {
         // Check if the file exists
-        if (LittleFS.exists(_filename)) {
+        if (EFFORTLESS_SPIFFS_TYPE.exists(_filename)) {
           // Open the dir and check if it is a file
-          File currentFile = LittleFS.open(_filename, "r");
+          File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "r");
           if (currentFile) {
             // Return the file size
             return currentFile.size();
@@ -107,11 +131,11 @@ class eSPIFFS {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {  // 5us
       // Check if the spiffs starts correctly
-      if (LittleFS.begin()) {  // 5us
+      if (EFFORTLESS_SPIFFS_TYPE.begin()) {  // 5us
         // Check if the file exists
-        if (LittleFS.exists(_filename)) {  // 49us
+        if (EFFORTLESS_SPIFFS_TYPE.exists(_filename)) {  // 49us
           // Open it in read mode and check if its ok
-          File currentFile = LittleFS.open(_filename, "r");  // 115us
+          File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "r");  // 115us
           if (currentFile) {
             // Read the desired number of bytes from the array to the output buffer
             size_t numBytesToRead = (_len > 0 && _len <= currentFile.size()) ? _len : currentFile.size();
@@ -139,9 +163,9 @@ class eSPIFFS {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {  // 5us
       // Check if the spiffs starts correctly
-      if (LittleFS.begin()) {  // 10us
+      if (EFFORTLESS_SPIFFS_TYPE.begin()) {  // 10us
         // Open the file in write mode and check if open
-        File currentFile = LittleFS.open(_filename, "w");
+        File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "w");
         if (currentFile) {
           // Print the input string to the file
           if (currentFile.print(_input)) {
@@ -386,10 +410,6 @@ class eSPIFFS {
   Print* printer = nullptr;
 };
 
-#endif
-
-#else
-#error Effortless_SPIFFS currently works on the ESP8266 only
 #endif
 
 #else
