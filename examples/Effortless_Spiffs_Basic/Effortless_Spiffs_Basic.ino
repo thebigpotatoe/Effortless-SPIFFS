@@ -71,27 +71,49 @@ void setup() {
   Serial.print("Float value is: ");
   Serial.println(newFloat, 15);
 
-  // Signed Values
-  signed long newSigned = 0;
+  // Signed Int Values
+  signed int newSignedInt = 0;
   if (writeToFlash) {
-    newSigned = random(-100000, 100000);
-    fileSystem.saveToFile("/Signed.txt", newSigned);
+    newSignedInt = random(-100000, 100000);
+    fileSystem.saveToFile("/SignedInt.txt", newSignedInt);
   } else {
-    fileSystem.openFromFile("/Signed.txt", newSigned);
+    fileSystem.openFromFile("/SignedInt.txt", newSignedInt);
   }
-  Serial.print("Signed value is: ");
-  Serial.println(newSigned);
+  Serial.print("Signed Int value is: ");
+  Serial.println(newSignedInt);
 
-  // Unsigned Values
-  unsigned long newUnsigned = 0;
+  // Signed Long Values
+  signed long newSignedLong = 0;
   if (writeToFlash) {
-    newUnsigned = random(0, 100000);
-    fileSystem.saveToFile("/Unsigned.txt", newUnsigned);
+    newSignedLong = random(-100000, 100000);
+    fileSystem.saveToFile("/SignedLong.txt", newSignedLong);
   } else {
-    fileSystem.openFromFile("/Unsigned.txt", newUnsigned);
+    fileSystem.openFromFile("/SignedLong.txt", newSignedLong);
   }
-  Serial.print("Unsigned value is: ");
-  Serial.println(newUnsigned);
+  Serial.print("Signed Long value is: ");
+  Serial.println(newSignedLong);
+
+  // Unsigned Int Values
+  unsigned long newUnsignedInt = 0;
+  if (writeToFlash) {
+    newUnsignedInt = random(0, 100000);
+    fileSystem.saveToFile("/UnsignedInt.txt", newUnsignedInt);
+  } else {
+    fileSystem.openFromFile("/UnsignedInt.txt", newUnsignedInt);
+  }
+  Serial.print("UnsignedInt value is: ");
+  Serial.println(newUnsignedInt);
+
+  // Unsigned Long Values
+  unsigned long newUnsignedLong = 0;
+  if (writeToFlash) {
+    newUnsignedLong = random(0, 100000);
+    fileSystem.saveToFile("/UnsignedLong.txt", newUnsignedLong);
+  } else {
+    fileSystem.openFromFile("/UnsignedLong.txt", newUnsignedLong);
+  }
+  Serial.print("Unsigned Long value is: ");
+  Serial.println(newUnsignedLong);
 
   // Char buffers
   const char* newCharBuffer;
