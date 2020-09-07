@@ -61,7 +61,7 @@ void setup() {
   Serial.println(newBool);
 
   // floats and doubles
-  double newFloat;
+  double newFloat = 0.0;
   if (writeToFlash) {
     newFloat = (float)random(1, 1000) / (float)random(1000, 65563);
     fileSystem.saveToFile("/Float.txt", newFloat);
@@ -72,7 +72,7 @@ void setup() {
   Serial.println(newFloat, 15);
 
   // Signed Values
-  signed long newSigned;
+  signed long newSigned = 0;
   if (writeToFlash) {
     newSigned = random(-100000, 100000);
     fileSystem.saveToFile("/Signed.txt", newSigned);
@@ -83,7 +83,7 @@ void setup() {
   Serial.println(newSigned);
 
   // Unsigned Values
-  unsigned long newUnsigned;
+  unsigned long newUnsigned = 0;
   if (writeToFlash) {
     newUnsigned = random(0, 100000);
     fileSystem.saveToFile("/Unsigned.txt", newUnsigned);
