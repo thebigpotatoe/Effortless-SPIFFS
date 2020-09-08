@@ -1,6 +1,6 @@
 # Effortless-SPIFFS
 
-![PlatformIO](https://github.com/thebigpotatoe/Effortless-SPIFFS/workflows/PlatformIO%20CI/badge.svg)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/Effortless-SPIFFS.svg?)](https://www.ardu-badge.com/Effortless-SPIFFS) ![PlatformIO](https://github.com/thebigpotatoe/Effortless-SPIFFS/workflows/PlatformIO%20CI/badge.svg)
 
 A class designed to make reading and storing data on the __ESP8266__ and __ESP32__ effortless. This library aims to make access to SPIFFS much easier to allow users to get on with writing the important stuff rather than debugging why storage isn't working.
 
