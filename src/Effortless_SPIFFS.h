@@ -95,11 +95,20 @@ class eSPIFFS {
       }
     }
 
+#elif defined(ESP32)
+    if (SPIFFS.begin()) {
+      if (EFFORTLESS_SPIFFS_TYPE.totalBytes() > 0) {
+        flashSizeCorrect = true;
+      } else {
+        ESPIFFS_DEBUGLN("[checkFlashConfig] - SPIFFS size was set to 0, please select a SPIFFS size from the \"tools->flash size:\" menu or partition a SPIFFS");
+      }
+    } else {
+      ESPIFFS_DEBUGLN("[checkFlashConfig] - Failed to start SPIFFS");
+    }
+#endif
+
     // Return the boolean
     return flashSizeCorrect;
-#elif defined(ESP32)
-    return (EFFORTLESS_SPIFFS_TYPE.totalBytes() > 0);
-#endif
   }
   virtual inline int getFileSize(const char* _filename) {
     // Check if the flash config is set correctly
