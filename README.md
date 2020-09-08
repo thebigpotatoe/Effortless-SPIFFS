@@ -5,8 +5,6 @@
 [![PlatformIO Build Status](https://github.com/thebigpotatoe/Effortless-SPIFFS/workflows/PlatformIO%20CI/badge.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/actions?query=workflow%3A%22PlatformIO+CI%22)
 [![Arduino Build Status](https://github.com/thebigpotatoe/Effortless-SPIFFS/workflows/Arduino/badge.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/actions?query=workflow%3A%22PlatformIO+CI%22)
 [![GitHub License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/blob/master/LICENSE)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
-[![GitHub issues](https://img.shields.io/github/issues/thebigpotatoe/Effortless-SPIFFS.svg)](http://github.com/thebigpotatoe/Effortless-SPIFFS/issues)
 
 A class designed to make reading and storing data on the __ESP8266__ and __ESP32__ effortless. This library aims to make access to SPIFFS much easier to allow users to get on with writing the important stuff rather than debugging why storage isn't working.
 
