@@ -9,7 +9,7 @@ jobs:
 
     env:
       PLATFORM_DEFAULT_URL: https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-      REQUIRED_LIBRARIES: Servo,Adafruit NeoPixel
+      REQUIRED_LIBRARIES: ArduinoJSON
     strategy:
       matrix:
         arduino-boards-fqbn:
