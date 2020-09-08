@@ -1,6 +1,19 @@
 # Effortless-SPIFFS
 
-A class designed to make reading and storing data on the ESP8266 effortless. This library aims to make access to SPIFFS much easier to allow users to get on with writing the important stuff rather than debugging why storage isn't working.
+A class designed to make reading and storing data on the __ESP8266__ and __ESP32__ effortless. This library aims to make access to SPIFFS much easier to allow users to get on with writing the important stuff rather than debugging why storage isn't working.
+
+## :exclamation: IMPORTANT :exclamation:
+
+When using in a project or exploring the example make sure to set your SPIFFS size correctly for your project/board. While the library will not fail when trying to open files from a non existent SPIFFS partition, failure to set the size will mean the library and hence project will not work as intended. 
+
+The library has a very handy method `checkFlashConfig()` to check this for you. Using this method at the start of your sketch with a meaningful `Serial.print()` statement will save you a lot of time wondering why things are not working in production. 
+
+For more info on setting the SPIFFS size see:
+
+- [ESP8266 SPIFFS in Arduino](https://cdn.instructables.com/ORIG/FST/OP12/IZT6TEBJ/FSTOP12IZT6TEBJ.png?auto=webp&frame=1&width=1024&fit=bounds&md=f16daccb8697a6bd8728838feb18d9de)
+- [ESP8266 SPIFFS in PlatformIO](https://docs.platformio.org/en/latest/platforms/espressif8266.html#flash-size)
+- [ESP32 SPIFFS in Arduino](https://user-images.githubusercontent.com/26627719/44614648-d76f9980-a852-11e8-8383-d6ae74a2ff5b.png)
+- [ESP32 SPIFFS in PlatformIO](https://docs.platformio.org/en/latest/platforms/espressif32.html#partition-tables)
 
 ## Quick Start
 
@@ -40,16 +53,16 @@ void loop() {
 
 ### As an Object
 
-This library can be used directly by creating an object using the eSIFFS class. When declaring the class there is an optional input for a reference to a HardwareSerial object to help with debugging.
+This library can be used directly by creating an object using the eSIFFS class. When declaring the class there is an optional input for a reference to a Print object to help with debugging.
 
 ``` c++
 // Definition
 eSPIFFS();
-eSPIFFS(&Serial);
+eSPIFFS(&Print);
 
 // Usage
 eSPIFFS fileSystem;
-eSPIFFS fileSystem(&Serial);
+eSPIFFS fileSystem(&Print);
 ```
 
 ### Extending a Class
@@ -203,6 +216,3 @@ Serial.println(myVariable, 6);
 ## Contributing and Feedback
 
 This is my first Arduino library and while I have tried to optimise it there is most likely room for improvement. Any feedback in the form of issues or pull request are welcome.
-
-- [ ] Port for ESP32
-- [ ] Make a derived class example
