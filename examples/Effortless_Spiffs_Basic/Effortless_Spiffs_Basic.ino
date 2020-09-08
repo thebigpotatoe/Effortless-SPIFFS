@@ -12,8 +12,17 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 */
 
+// #define USE_SERIAL_DEBUG_FOR_eSPIFFS  // Uncomment to use Serial for debug in eSIFFS library
 // #include <ArduinoJson.h>  // Uncomment this to include ArduinoJson. Make sure to have it installed first
 #include <Effortless_SPIFFS.h>
+
+/* A Word of Warning!
+		The ESP SPIFFS class and consequently this library
+		only suports a file name size of 31 characters, it
+		is up to you to manage this. You may get away with
+		having more characters, but this could lead to
+		undefined behaviour
+	*/
 
 void setup() {
   // Start Serial
@@ -24,16 +33,20 @@ void setup() {
   delay(1000);
 
   // Create a eSPIFFS class
-  // eSPIFFS fileSystem;
-  eSPIFFS fileSystem(&Serial);  // Optional - allow the methods to print debug
+  #ifndef USE_SERIAL_DEBUG_FOR_eSPIFFS
+    // Create fileSystem
+    eSPIFFS fileSystem;
 
-  /* A Word of Warning!
-		The ESP SPIFFS class and consequently this library 
-		only suports a file name size of 31 characters, it 
-		is up to you to manage this. You may get away with 
-		having more characters, but this could lead to 
-		undefined behaviour
-	*/
+    // Check Flash Size - Always try to incorrperate a check when not debugging to know if you have set the SPIFFS correctly
+    if (!fileSystem.checkFlashConfig()) {
+      Serial.println("Flash size was not correct! Please check your SPIFFS config and try again");
+      delay(100000);
+      ESP.restart();
+    }
+  #else
+    // Create fileSystem with debug output
+    eSPIFFS fileSystem(&Serial);  // Optional - allow the methods to print debug
+  #endif
 
   // This will change value through reboots
   bool writeToFlash = false;                                   // default value will be overriden by opening file
