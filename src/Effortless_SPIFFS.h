@@ -11,14 +11,11 @@
 #if defined(ESP8266)
 #include <LittleFS.h>
 #define EFFORTLESS_SPIFFS_TYPE LittleFS
-#endif
-
-#if defined(ESP32)
-// #error Effortless SPIFFS doe snot yet support the ESP32
+#elif defined(ESP32)
 #include "SPIFFS.h"
 #define EFFORTLESS_SPIFFS_TYPE SPIFFS
-// #else
-// #error Effortless SPIFFS does nto work on the selected architecture
+#else
+#error Effortless SPIFFS does not work on the selected architecture
 #endif
 
 // Standard c++ libraries
