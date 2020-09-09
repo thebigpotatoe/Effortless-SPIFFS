@@ -199,6 +199,14 @@ class eSPIFFS {
     return false;
   }
 
+ public:
+  void setDebugOutput(Print* _debug) {
+    if (_debug) printer = _debug;
+  }
+  void clearDebugOutput() {
+    printer = nullptr;
+  }
+
  public:  // open value templates
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, bool>::value, bool>::type
