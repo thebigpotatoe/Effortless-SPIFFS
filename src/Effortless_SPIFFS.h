@@ -27,6 +27,10 @@
 #ifndef Effortless_SPIFFS_h
 #define Effortless_SPIFFS_h
 
+#define EFFORTLESS_SPIFFS_VERSION_MAJOR 2
+#define EFFORTLESS_SPIFFS_VERSION_MINOR 1
+#define EFFORTLESS_SPIFFS_VERSION_PATCH 1
+
 // Effortless SPIFFS Constants
 #ifndef Effortless_SPIFFS_CHAR_SIZE
 #define Effortless_SPIFFS_CHAR_SIZE 1024
