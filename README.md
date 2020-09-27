@@ -1,7 +1,7 @@
 # Effortless-SPIFFS
 
 [![GitHub release](https://img.shields.io/github/release/thebigpotatoe/Effortless-SPIFFS.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/releases)
-[![arduino-library-badge](https://www.ardu-badge.com/badge/Effortless-SPIFFS.svg?)](https://www.ardu-badge.com/Effortless-SPIFFS) 
+[![arduino-library-badge](https://www.ardu-badge.com/badge/Effortless-SPIFFS.svg?)](https://www.ardu-badge.com/Effortless-SPIFFS)
 [![PlatformIO Build Status](https://github.com/thebigpotatoe/Effortless-SPIFFS/workflows/PlatformIO%20CI/badge.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/actions?query=workflow%3A%22PlatformIO+CI%22)
 [![Arduino Build Status](https://github.com/thebigpotatoe/Effortless-SPIFFS/workflows/Arduino/badge.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/actions?query=workflow%3A%22PlatformIO+CI%22)
 [![GitHub License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/thebigpotatoe/Effortless-SPIFFS/blob/master/LICENSE)
@@ -10,9 +10,9 @@ A class designed to make reading and storing data on the __ESP8266__ and __ESP32
 
 ## :exclamation: IMPORTANT :exclamation:
 
-When using in a project or exploring the example make sure to set your SPIFFS size correctly for your project/board. While the library will not fail when trying to open files from a non existent SPIFFS partition, failure to set the size will mean the library and hence project will not work as intended. 
+When using in a project or exploring the example make sure to set your SPIFFS size correctly for your project/board. While the library will not fail when trying to open files from a non existent SPIFFS partition, failure to set the size will mean the library and hence project will not work as intended.
 
-The library has a very handy method `checkFlashConfig()` to check this for you. Using this method at the start of your sketch with a meaningful `Serial.print()` statement will save you a lot of time wondering why things are not working in production. 
+The library has a very handy method `checkFlashConfig()` to check this for you. Using this method at the start of your sketch with a meaningful `Serial.print()` statement will save you a lot of time wondering why things are not working in production.
 
 For more info on setting the SPIFFS size see:
 
@@ -31,11 +31,14 @@ The example below is all you need to get going with opening and saving data from
 eSPIFFS fileSystem;
 float myVariable;
 
-void setup(){}
+void setup(){
+    Serial.begin(115200);
+    Serial.println();
+}
 
 void loop() {
     // Open the storage file and save data to myVariable
-    if (fileSystem.saveToFile("/Float.txt", myVariable)) {
+    if (fileSystem.openFromFile("/Float.txt", myVariable)) {
         Serial.print("Successfully read file and parsed data: ");
         Serial.println(myVariable, 6);
     }
@@ -46,7 +49,7 @@ void loop() {
     Serial.println(myVariable, 6);
 
     // Write the data back to the SPIFFS
-    if (fileSystem.openFromFile("/Float.txt", myVariable)) {
+    if (fileSystem.saveToFile("/Float.txt", myVariable)) {
         Serial.println("Successfully wrote data to file");
     }
 
@@ -122,7 +125,7 @@ size_t fileSize = fileSystem.getFileSize("/Example.file");
 
 The eSPIFFS API allows users to store data to the SPIFFS two possible methods; by passing a const char* or a variable reference of your choice.
 
-### Saving data to file from a const char* C String 
+### Saving data to file from a const char* C String
 
 The first method `saveFile` is used to store data into SPIFFS is via a const char* C string. The function takes a filename and a const char* pointer to a string which is then printed to SPIFFS. The file will return true if the data was written and false if there was an issue.
 
