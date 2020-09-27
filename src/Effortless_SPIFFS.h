@@ -97,7 +97,7 @@ class eSPIFFS {
     }
 
 #elif defined(ESP32)
-    if (SPIFFS.begin()) {
+    if (EFFORTLESS_SPIFFS_TYPE.begin()) {
       if (EFFORTLESS_SPIFFS_TYPE.totalBytes() > 0) {
         flashSizeCorrect = true;
       } else {
