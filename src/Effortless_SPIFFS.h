@@ -64,7 +64,7 @@ namespace Effortless_SPIFFS_Internal {
 // Main Effortless SPIFFS Class
 class eSPIFFS {
  public:  // constructors
-  eSPIFFS(Print* _debug = nullptr) : printer(_debug) { checkFlashConfig(); }
+  eSPIFFS(Print* _debug = nullptr) : printer(_debug) {}
   ~eSPIFFS() {}
 
  public:  // spiffs access methods
