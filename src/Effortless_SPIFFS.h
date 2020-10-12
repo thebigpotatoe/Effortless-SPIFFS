@@ -310,15 +310,11 @@ class eSPIFFS {
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   openFromFile(const char* _filename, T& _output) {
-    size_t fileSize = getFileSize(_filename);
-    char   fileContents[fileSize + 1];
-    memset(fileContents, 0x00, fileSize + 1);
-
-    if (openFile(_filename, fileContents, fileSize)) {
-      DynamicJsonDocument  currentjsonDocument(_output.capacity());
-      DeserializationError jsonError = deserializeJson(currentjsonDocument, fileContents);
+    std::string fileContents;
+    if (openFromFile(_filename, fileContents)) {
+      _output.clear();
+      DeserializationError jsonError = deserializeJson(_output, fileContents);
       if (!jsonError) {
-        _output = currentjsonDocument;
         return true;
       } else {
         ESPIFFS_DEBUG("[openFromFile<DynamicJsonDocument>] - Failed to parse JSON: ");
