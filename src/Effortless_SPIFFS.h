@@ -5,6 +5,7 @@
 // Check for arduino env here
 // Arduino Libraries
 #include <Print.h>
+
 #include "FS.h"
 
 // Architecture Specific Libraries
@@ -191,6 +192,32 @@ class eSPIFFS {
         }
       } else {
         ESPIFFS_DEBUGLN("[saveFile] - Failed to start LittleFS");
+      }
+    }
+    return false;
+  }
+  virtual bool appendFile(const char* _filename, const char* _input) {
+    // Check if the flash config is set correctly
+    if (checkFlashConfig()) {  // 5us
+      // Check if the spiffs starts correctly
+      if (EFFORTLESS_SPIFFS_TYPE.begin()) {  // 10us
+        // Open the file in write mode and check if open
+        File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "a");
+        if (currentFile) {
+          // Print the input string to the file
+          if (currentFile.print(_input)) {
+            currentFile.close();
+            return true;
+          } else {
+            ESPIFFS_DEBUG("[saveFile] - Failed to append any bytes to file: ");
+            ESPIFFS_DEBUGLN(_filename);
+          }
+        } else {
+          ESPIFFS_DEBUG("[saveFile] - Failed to open file for appending");
+          ESPIFFS_DEBUGLN(_filename);
+        }
+      } else {
+        ESPIFFS_DEBUGLN("[saveFile] - Failed to start file system");
       }
     }
     return false;
@@ -409,6 +436,98 @@ class eSPIFFS {
     String bufferString;
     if (serializeJson(_input, bufferString)) {
       if (saveFile(_filename, bufferString.c_str())) {
+        return true;
+      }
+    } else {
+      ESPIFFS_DEBUG("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
+      ESPIFFS_DEBUGLN(_filename);
+    }
+    return false;
+  }
+#endif
+
+ public:  // save value templates
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, bool>::value, bool>::type
+  appendToFile(const char* _filename, T& _input) {
+    char inputString[2];  // Bool string will be: "0" + \0
+    if (sprintf(inputString, "%d", _input)) {
+      if (appendFile(_filename, inputString)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, float>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, double>::value,
+                                                 bool>::type
+  appendToFile(const char* _filename, T& _input) {
+    char inputString[Effortless_SPIFFS_PRECISION + 7];  // precision + decimal() + notation(4) + sign(1) + null(1)
+    if (sprintf(inputString, "%.*g", Effortless_SPIFFS_PRECISION, _input)) {
+      if (appendFile(_filename, inputString)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, signed char>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, signed int>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, signed short>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, signed long>::value,
+                                                 bool>::type
+  appendToFile(const char* _filename, T& _input) {
+    char inputString[15];  // signed long string will be 11 digits + \0
+    if (sprintf(inputString, "%li", (signed long)_input)) {
+      if (appendFile(_filename, inputString)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, unsigned char>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, unsigned int>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, unsigned short>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, unsigned long>::value,
+                                                 bool>::type
+  appendToFile(const char* _filename, T& _input) {
+    char inputString[15];  // unsigned long string will be 10 digits + \0
+    if (sprintf(inputString, "%lu", (unsigned long)_input)) {
+      if (appendFile(_filename, inputString)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, char*>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, const char*>::value,
+                                                 bool>::type
+  appendToFile(const char* _filename, T _input) {
+    if (appendFile(_filename, _input)) {
+      return true;
+    }
+    return false;
+  }
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, String>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, std::string>::value,
+                                                 bool>::type
+  appendToFile(const char* _filename, T& _input) {
+    if (saveFile(_filename, _input.c_str())) {
+      return true;
+    }
+    return false;
+  }
+#if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
+  template <class T>
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
+  appendToFile(const char* _filename, T& _input) {
+    String bufferString;
+    if (serializeJson(_input, bufferString)) {
+      if (appendFile(_filename, bufferString.c_str())) {
         return true;
       }
     } else {
