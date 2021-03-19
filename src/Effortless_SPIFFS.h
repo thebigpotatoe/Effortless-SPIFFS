@@ -324,10 +324,9 @@ class eSPIFFS {
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   openFromFile(const char* _filename, T& _output) {
-    std::string fileContents;
-    if (openFromFile(_filename, fileContents)) {
-      _output.clear();
-      DeserializationError jsonError = deserializeJson(_output, fileContents);
+    File file = getFile(_filename, "r");
+    if (file) {
+      DeserializationError jsonError = deserializeJson(_output, file);
       if (!jsonError) {
         return true;
       } else {
@@ -420,14 +419,15 @@ class eSPIFFS {
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   saveToFile(const char* _filename, T& _input) {
-    String bufferString;
-    if (serializeJson(_input, bufferString)) {
-      if (saveFile(_filename, bufferString.c_str())) {
+    File file = getFile(_filename, "w");
+    if (file) {
+      if (serializeJson(_input, file)) {
+        file.close();
         return true;
+      } else {
+        ESPIFFS_DEBUG("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
+        ESPIFFS_DEBUGLN(_filename);
       }
-    } else {
-      ESPIFFS_DEBUG("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
-      ESPIFFS_DEBUGLN(_filename);
     }
     return false;
   }
@@ -512,14 +512,15 @@ class eSPIFFS {
   template <class T>
   typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
   appendToFile(const char* _filename, T& _input) {
-    String bufferString;
-    if (serializeJson(_input, bufferString)) {
-      if (appendFile(_filename, bufferString.c_str())) {
+    File file = getFile(_filename, "a");
+    if (file) {
+      if (serializeJson(_input, file)) {
+        file.close();
         return true;
+      } else {
+        ESPIFFS_DEBUG("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
+        ESPIFFS_DEBUGLN(_filename);
       }
-    } else {
-      ESPIFFS_DEBUG("[saveToFile<DynamicJsonDocument>] - Failed to serialize JSON for file ");
-      ESPIFFS_DEBUGLN(_filename);
     }
     return false;
   }
