@@ -138,24 +138,17 @@ class eSPIFFS {
     }
     return 0;
   }
-  virtual bool openFile(const char* _filename, char* _output, size_t _len = 0) {
+  virtual File getFile(const char* _filename, const char* _readWrite) {
     // Check if the flash config is set correctly
     if (checkFlashConfig()) {  // 5us
       // Check if the spiffs starts correctly
       if (EFFORTLESS_SPIFFS_TYPE.begin()) {  // 5us
         // Check if the file exists
-        if (EFFORTLESS_SPIFFS_TYPE.exists(_filename)) {  // 49us
+        if (strcmp(_readWrite, "r") == 0 ? EFFORTLESS_SPIFFS_TYPE.exists(_filename) : true) {  // 49us
           // Open it in read mode and check if its ok
-          File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "r");  // 115us
+          File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, _readWrite);  // 115us
           if (currentFile) {
-            // Read the desired number of bytes from the array to the output buffer
-            size_t numBytesToRead = (_len > 0 && _len <= currentFile.size()) ? _len : currentFile.size();
-            if (currentFile.readBytes(_output, numBytesToRead)) {  // readBytes - 300us, readBytesUntil - 465us - goes up with larger strings
-              return true;
-            } else {
-              ESPIFFS_DEBUG("[openFile] - Failed to read any bytes from file: ");
-              ESPIFFS_DEBUGLN(_filename);
-            }
+            return currentFile;
           } else {
             ESPIFFS_DEBUG("[openFile] - Failed to open file");
             ESPIFFS_DEBUGLN(_filename);
@@ -168,56 +161,50 @@ class eSPIFFS {
         ESPIFFS_DEBUGLN("[openFile] - Failed to start LittleFS");
       }
     }
-    return false;
+    return File();
   }
-  virtual bool saveFile(const char* _filename, const char* _input) {  // Total time is about 6000us for small strings
-    // Check if the flash config is set correctly
-    if (checkFlashConfig()) {  // 5us
-      // Check if the spiffs starts correctly
-      if (EFFORTLESS_SPIFFS_TYPE.begin()) {  // 10us
-        // Open the file in write mode and check if open
-        File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "w");
-        if (currentFile) {
-          // Print the input string to the file
-          if (currentFile.print(_input)) {
-            currentFile.close();
-            return true;
-          } else {
-            ESPIFFS_DEBUG("[saveFile] - Failed to write any bytes to file: ");
-            ESPIFFS_DEBUGLN(_filename);
-          }
-        } else {
-          ESPIFFS_DEBUG("[saveFile] - Failed to open file for writing");
-          ESPIFFS_DEBUGLN(_filename);
-        }
+  virtual bool openFile(const char* _filename, char* _output, size_t _len = 0) {
+    // Open it in read mode and check if its ok
+    File currentFile = getFile(_filename, "r");  // 115us
+    if (currentFile) {
+      // Read the desired number of bytes from the array to the output buffer
+      size_t numBytesToRead = (_len > 0 && _len <= currentFile.size()) ? _len : currentFile.size();
+      if (currentFile.readBytes(_output, numBytesToRead)) {  // readBytes - 300us, readBytesUntil - 465us - goes up with larger strings
+        return true;
       } else {
-        ESPIFFS_DEBUGLN("[saveFile] - Failed to start LittleFS");
+        ESPIFFS_DEBUG("[openFile] - Failed to read any bytes from file: ");
+        ESPIFFS_DEBUGLN(_filename);
       }
     }
     return false;
   }
-  virtual bool appendFile(const char* _filename, const char* _input) {
-    // Check if the flash config is set correctly
-    if (checkFlashConfig()) {  // 5us
-      // Check if the spiffs starts correctly
-      if (EFFORTLESS_SPIFFS_TYPE.begin()) {  // 10us
-        // Open the file in write mode and check if open
-        File currentFile = EFFORTLESS_SPIFFS_TYPE.open(_filename, "a");
-        if (currentFile) {
-          // Print the input string to the file
-          if (currentFile.print(_input)) {
-            currentFile.close();
-            return true;
-          } else {
-            ESPIFFS_DEBUG("[saveFile] - Failed to append any bytes to file: ");
-            ESPIFFS_DEBUGLN(_filename);
-          }
-        } else {
-          ESPIFFS_DEBUG("[saveFile] - Failed to open file for appending");
-          ESPIFFS_DEBUGLN(_filename);
-        }
+  virtual bool saveFile(const char* _filename, const char* _input) {  // Total time is about 6000us for small strings
+    // Open the file in write mode and check if open
+    File currentFile = getFile(_filename, "w");
+    if (currentFile) {
+      // Print the input string to the file
+      if (currentFile.print(_input)) {
+        currentFile.close();
+        return true;
       } else {
-        ESPIFFS_DEBUGLN("[saveFile] - Failed to start file system");
+        ESPIFFS_DEBUG("[saveFile] - Failed to write any bytes to file: ");
+        ESPIFFS_DEBUGLN(_filename);
+      }
+    }
+
+    return false;
+  }
+  virtual bool appendFile(const char* _filename, const char* _input) {
+    // Open the file in write mode and check if open
+    File currentFile = getFile(_filename, "a");
+    if (currentFile) {
+      // Print the input string to the file
+      if (currentFile.print(_input)) {
+        currentFile.close();
+        return true;
+      } else {
+        ESPIFFS_DEBUG("[saveFile] - Failed to append any bytes to file: ");
+        ESPIFFS_DEBUGLN(_filename);
       }
     }
     return false;
