@@ -173,6 +173,28 @@ void setup() {
   Serial.print("JSON Document is: ");
   serializeJson(jsonDocument, Serial);
   Serial.println();
+
+  JsonObject jobject = jsonDocument.to<JsonObject>();
+  if (writeToFlash) {
+    jobject["Value"] = random(0, 100000);
+    fileSystem.saveToFile("/jsonObject.txt", jobject);
+  } else {
+    fileSystem.openFromFile("/jsonObject.txt", jsonDocument);
+  }
+  Serial.print("JSON Object is: ");
+  serializeJson(jobject, Serial);
+  Serial.println();
+
+  JsonArray jarray = jsonDocument.to<JsonArray>();
+  if (writeToFlash) {
+    jarray[0] = random(0, 100000);
+    fileSystem.saveToFile("/jsonArray.txt", jarray);
+  } else {
+    fileSystem.openFromFile("/jsonArray.txt", jsonDocument);
+  }
+  Serial.print("JSON Array is: ");
+  serializeJson(jarray, Serial);
+  Serial.println();
 #endif
 
   // Reboot to see what values are stored

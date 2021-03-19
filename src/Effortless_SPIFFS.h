@@ -417,7 +417,10 @@ class eSPIFFS {
   }
 #if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   template <class T>
-  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, JsonObject>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, JsonArray>::value,
+                                                 bool>::type
   saveToFile(const char* _filename, T& _input) {
     File file = getFile(_filename, "w");
     if (file) {
@@ -510,7 +513,10 @@ class eSPIFFS {
   }
 #if defined ARDUINOJSON_VERSION_MAJOR && ARDUINOJSON_VERSION_MAJOR == 6
   template <class T>
-  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value, bool>::type
+  typename Effortless_SPIFFS_Internal::enable_if<Effortless_SPIFFS_Internal::is_same<T, DynamicJsonDocument>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, JsonObject>::value ||
+                                                     Effortless_SPIFFS_Internal::is_same<T, JsonArray>::value,
+                                                 bool>::type
   appendToFile(const char* _filename, T& _input) {
     File file = getFile(_filename, "a");
     if (file) {
